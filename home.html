@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- import bootstrap -->
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="./node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <!-- import axios -->
+    <script src="./node_modules/axios/dist/axios.min.js"></script>
+
+    <style>
+      body {
+        background-color: #f0cfff;
+      }
+
+      #add-btn {
+        position: fixed;
+        bottom: 10%;
+        right: 7%;
+        height: 70px;
+        width: 70px;
+        font-size: 50px;
+        color: white;
+        border-radius: 100px;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.3);
+        z-index: 99999;
+      }
+      /* loading */
+      .lds-spinner {
+        color: official;
+        display: inline-block;
+        position: relative;
+        width: 80px;
+        height: 80px;
+      }
+      .lds-spinner div {
+        transform-origin: 40px 40px;
+        animation: lds-spinner 1.2s linear infinite;
+      }
+      .lds-spinner div:after {
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 3px;
+        left: 37px;
+        width: 6px;
+        height: 18px;
+        border-radius: 20%;
+        background: #fff;
+      }
+      .lds-spinner div:nth-child(1) {
+        transform: rotate(0deg);
+        animation-delay: -1.1s;
+      }
+      .lds-spinner div:nth-child(2) {
+        transform: rotate(30deg);
+        animation-delay: -1s;
+      }
+      .lds-spinner div:nth-child(3) {
+        transform: rotate(60deg);
+        animation-delay: -0.9s;
+      }
+      .lds-spinner div:nth-child(4) {
+        transform: rotate(90deg);
+        animation-delay: -0.8s;
+      }
+      .lds-spinner div:nth-child(5) {
+        transform: rotate(120deg);
+        animation-delay: -0.7s;
+      }
+      .lds-spinner div:nth-child(6) {
+        transform: rotate(150deg);
+        animation-delay: -0.6s;
+      }
+      .lds-spinner div:nth-child(7) {
+        transform: rotate(180deg);
+        animation-delay: -0.5s;
+      }
+      .lds-spinner div:nth-child(8) {
+        transform: rotate(210deg);
+        animation-delay: -0.4s;
+      }
+      .lds-spinner div:nth-child(9) {
+        transform: rotate(240deg);
+        animation-delay: -0.3s;
+      }
+      .lds-spinner div:nth-child(10) {
+        transform: rotate(270deg);
+        animation-delay: -0.2s;
+      }
+      .lds-spinner div:nth-child(11) {
+        transform: rotate(300deg);
+        animation-delay: -0.1s;
+      }
+      .lds-spinner div:nth-child(12) {
+        transform: rotate(330deg);
+        animation-delay: 0s;
+      }
+      @keyframes lds-spinner {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      /*// loading //*/
+    </style>
+  </head>
+
+  <body>
+    <!-- loading -->
+    <div
+      id="loader"
+      style="
+        background-color: rgba(128, 128, 128, 0.194);
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        width: 100px;
+        height: 100px;
+        border-radius: 20px;
+      "
+    >
+      <div class="lds-spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <!--// loading //-->
+
+    <!-- modals -->
+    <!-- alerts -->
+    <div
+      id="success-alert"
+      class="show fade"
+      style="position: fixed; z-index: 9999; width: 30%; bottom: 0; right: 0"
+    ></div>
+    <!-- login modal -->
+    <div
+      class="modal fade"
+      id="login-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+            <button
+              type="button"
+              id="close-b"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >Username:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  value="Yarob99"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >password:</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  value="123456"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="loginBtnClicked()"
+            >
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--// login modal //-->
+
+    <!-- register modal -->
+    <div
+      class="modal fade"
+      id="register-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">register</h1>
+            <button
+              type="button"
+              id="close-b"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label">name:</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="register-name"
+                  value="Yarob99"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >Username:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="register-username"
+                  value="ahmed"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label"
+                  >password:</label
+                >
+                <input
+                  type="password"
+                  class="form-control"
+                  id="register-password"
+                  value="123456"
+                />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">image:</label>
+                <input type="file" class="form-control" id="register-image" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="registerBtnClicked()"
+            >
+              register
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--// register modal //-->
+
+    <!--// modals //-->
+
+    <!-- creat-post-modal  -->
+    <div
+      class="modal fade"
+      id="creat-post-modal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="post-modal-title">
+              Creat A New Post
+            </h1>
+            <button
+              type="button"
+              id="close-b"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label for="recipient-name" class="col-form-label"
+                  >title:</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="post-title"
+                  value=""
+                />
+
+                <input type="hidden" id="post-id-input" value="" />
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">body:</label>
+                <textarea
+                  name=""
+                  id="post-body"
+                  style="
+                    width: 100%;
+                    height: 100px;
+                    border-color: gray;
+                    border-radius: 10px;
+                    resize: none;
+                  "
+                ></textarea>
+              </div>
+              <div class="mb-3">
+                <label for="message-text" class="col-form-label">image:</label>
+                <input
+                  type="file"
+                  class="form-control"
+                  id="post-image"
+                  value=""
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              id="close-btn-post-model"
+            >
+              Close
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="createNewPostClicked()"
+              id="editOrCreate-btn"
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--// creat-post-modal //-->
+    <!-- navigation bar container -->
+    <div class="container pb-3 pt-1">
+      <nav class="navbar navbar-expand-lg bg-light shadow-lg rounded pt-3">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="home.html">Tarmeez</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav" id="navbar-nav-cont">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="home.html"
+                  >Home</a
+                >
+              </li>
+              <li class="nav-item" id="nav-profile"></li>
+            </ul>
+            <!-- logged in div -->
+            <div class="d-flex w-100 justify-content-end" id="login-div">
+              <button
+                type="button"
+                id="login-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#login-modal"
+                class="btn btn-outline-success mx-2"
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                id="register-btn"
+                class="btn btn-outline-success"
+                data-bs-toggle="modal"
+                data-bs-target="#register-modal"
+              >
+                Register
+              </button>
+            </div>
+            <!-- logged out div -->
+            <div class="d-flex w-100 justify-content-end" id="logout-div">
+              <img
+                src=""
+                alt=""
+                id="profile-im"
+                style="width: 40px; height: 40px"
+                class="rounded-circle"
+              />
+              <h4
+                style="cursor: pointer"
+                id="username-logged"
+                class="mx-2"
+              ></h4>
+              <button
+                id="logout-btn"
+                class="btn btn-outline-danger"
+                onclick="logoutBtnClicked()"
+              >
+                Logout
+              </button>
+              <div
+                id="add-btn"
+                class="bg-primary"
+                data-bs-toggle="modal"
+                data-bs-target="#creat-post-modal"
+              >
+                +
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!--// navigation bar container //-->
+    <!-- main content -->
+    <div class="container" style="height: 1000px">
+      <!-- posts -->
+      <div id="posts"></div>
+      <!--// posts //-->
+    </div>
+    <!--// main content //-->
+  </body>
+
+  <script src="./mainLogic.js"></script>
+  <script src="./homeScripts.js"></script>
+
+  <script>
+    isUserLogin();
+  </script>
+</html>
